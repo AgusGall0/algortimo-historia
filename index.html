@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Acceso - El Algoritmo de Nuestra Historia</title>
+    <style>
+        body { background-color: #0d1117; color: #58a6ff; font-family: 'Courier New', monospace; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .terminal { width: 90%; max-width: 500px; border: 1px solid #30363d; padding: 20px; background: #161b22; border-radius: 8px; }
+        input { background: transparent; border: none; border-bottom: 1px solid #58a6ff; color: #7ee787; font-family: inherit; font-size: 1.1rem; outline: none; width: 100%; margin-top: 10px; }
+        .success { color: #3fb950; margin-top: 20px; }
+        a { color: #d29922; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="terminal">
+        <p>> SISTEMA: EL ALGORITMO DE NUESTRA HISTORIA</p>
+        <p>> Ingrese clave (DDMMAAAA):</p>
+        <input type="password" id="pass" autofocus>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const input = document.getElementById('pass');
+        const result = document.getElementById('result');
+        // REEMPLAZA ESTO: Poné tu fecha (ej: "15122024")
+        const clave = "TU_FECHA_AQUI"; 
+
+        input.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                if (input.value === clave) {
+                    result.innerHTML = `
+                        <p class="success">> [✓] ACCESO PERMITIDO</p>
+                        <p>> <a href="TU_LINK_DE_DRIVE_AQUI" target="_blank">DESCARGAR CARTA.PDF</a></p>
+                    `;
+                    input.style.display = 'none';
+                } else {
+                    alert("Clave incorrecta");
+                    input.value = "";
+                }
+            }
+        });
+    </script>
+</body>
+</html>
