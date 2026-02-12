@@ -2,40 +2,56 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Acceso - El Algoritmo de Nuestra Historia</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso Restringido</title>
     <style>
         body { background-color: #0d1117; color: #58a6ff; font-family: 'Courier New', monospace; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .terminal { width: 90%; max-width: 500px; border: 1px solid #30363d; padding: 20px; background: #161b22; border-radius: 8px; }
-        input { background: transparent; border: none; border-bottom: 1px solid #58a6ff; color: #7ee787; font-family: inherit; font-size: 1.1rem; outline: none; width: 100%; margin-top: 10px; }
-        .success { color: #3fb950; margin-top: 20px; }
-        a { color: #d29922; font-weight: bold; }
+        .terminal { width: 90%; max-width: 600px; border: 1px solid #30363d; padding: 25px; background: #161b22; border-radius: 6px; box-shadow: 0 0 20px rgba(88, 166, 255, 0.2); }
+        p { margin: 10px 0; line-height: 1.5; }
+        input { background: transparent; border: none; border-bottom: 2px solid #58a6ff; color: #7ee787; font-family: inherit; font-size: 1.2rem; outline: none; width: 100%; padding: 5px; margin-top: 15px; }
+        .success { color: #3fb950; font-weight: bold; margin-top: 20px; border: 1px dashed #3fb950; padding: 10px; }
+        .error { color: #f85149; margin-top: 10px; }
+        a { color: #d29922; text-decoration: none; border-bottom: 1px solid #d29922; }
+        a:hover { background: #d29922; color: #0d1117; }
     </style>
 </head>
 <body>
     <div class="terminal">
-        <p>> SISTEMA: EL ALGORITMO DE NUESTRA HISTORIA</p>
-        <p>> Ingrese clave (DDMMAAAA):</p>
-        <input type="password" id="pass" autofocus>
-        <div id="result"></div>
+        <p>> SISTEMA: "EL ALGORITMO DE NUESTRA HISTORIA"</p>
+        <p>> ESTADO: PROTEGIDO. INTRODUZCA CREDENCIALES.</p>
+        <p>> Pista: Fecha de inicio (DDMMAAAA)</p>
+        
+        <input type="password" id="pass" placeholder="Ej: 24102025" autofocus maxlength="8">
+        <div id="mensaje"></div>
     </div>
 
     <script>
         const input = document.getElementById('pass');
-        const result = document.getElementById('result');
-        // REEMPLAZA ESTO: Poné tu fecha (ej: "15122024")
-        const clave = "TU_FECHA_AQUI"; 
+        const mensaje = document.getElementById('mensaje');
+        
+        // --- CONFIGURACIÓN ---
+        const claveSecreta = "24102025"; // TU FECHA YA PUESTA
+        
+        // ¡OJO! ACÁ TENÉS QUE PEGAR EL LINK DE TU PDF DE DRIVE CUANDO LO TENGAS
+        const linkPDF = "TU_LINK_DE_DRIVE_AQUI"; 
+        // ---------------------
 
         input.addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
-                if (input.value === clave) {
-                    result.innerHTML = `
-                        <p class="success">> [✓] ACCESO PERMITIDO</p>
-                        <p>> <a href="TU_LINK_DE_DRIVE_AQUI" target="_blank">DESCARGAR CARTA.PDF</a></p>
+                if (input.value === claveSecreta) {
+                    // SI LA CLAVE ES CORRECTA (24102025):
+                    mensaje.innerHTML = `
+                        <div class="success">
+                            <p>> [✓] ACCESO CONCEDIDO.</p>
+                            <p>> Desencriptando archivo...</p>
+                            <p>> <a href="${linkPDF}" target="_blank">DESCARGAR_CARTA_OFICIAL.PDF</a></p>
+                        </div>
                     `;
-                    input.style.display = 'none';
+                    input.style.display = 'none'; // Oculta el input
                 } else {
-                    alert("Clave incorrecta");
-                    input.value = "";
+                    // SI LA CLAVE ESTÁ MAL:
+                    mensaje.innerHTML = `<p class="error">> [X] ERROR: Clave incorrecta. Intente nuevamente.</p>`;
+                    input.value = ""; // Limpia el input
                 }
             }
         });
