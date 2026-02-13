@@ -112,6 +112,12 @@
             box-shadow: 0 0 30px #ff0055;
             background-color: transparent;
         }
+        /* ESTO HACE QUE SE VEA BIEN EN CELULARES */
+        @media (max-width: 480px) {
+            h2 { font-size: 1.5rem; }
+            pre { font-size: 8px; line-height: 8px; } /* Achica el corazón */
+            .terminal { padding: 15px; width: 95%; }
+        }
 
     </style>
 </head>
@@ -214,6 +220,7 @@
     </script>
 </body>
 </html>
+
 
 
 
