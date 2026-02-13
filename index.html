@@ -11,12 +11,12 @@
             color: #0f0;
             font-family: 'Courier New', Courier, monospace;
             margin: 0;
-            min-height: 100vh; /* Usamos min-height para permitir scroll si hace falta */
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             text-shadow: 0 0 5px #0f0;
-            overflow-x: hidden; /* Evita scroll horizontal */
+            overflow-x: hidden;
         }
 
         /* EFECTO CRT */
@@ -36,7 +36,7 @@
             max-width: 600px;
             z-index: 3;
             padding: 20px;
-            margin: auto; /* Centrado */
+            margin: auto;
         }
 
         /* TEXTO QUE SE ESCRIBE SOLO */
@@ -54,6 +54,7 @@
             50% { border-color: #0f0; }
         }
 
+        /* INPUT DE FECHA */
         input {
             background: transparent;
             border: none;
@@ -64,13 +65,38 @@
             outline: none;
             width: 100%;
             margin-top: 20px;
-            display: none;
-            border-radius: 0; /* Saca bordes redondos en iPhone */
+            display: none; /* Oculto al inicio */
+            border-radius: 0;
+            text-align: center; /* Centrar el texto al escribir */
+            letter-spacing: 3px;
+        }
+
+        /* BOTÓN DE DESBLOQUEO (NUEVO) */
+        #btn-unlock {
+            background: transparent;
+            border: 1px solid #0f0;
+            color: #0f0;
+            padding: 15px;
+            width: 100%;
+            margin-top: 25px;
+            font-family: inherit;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            display: none; /* Oculto al inicio */
+            text-shadow: 0 0 5px #0f0;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
+            transition: all 0.2s;
+        }
+
+        #btn-unlock:active {
+            background-color: #0f0;
+            color: #000;
         }
 
         .hidden { display: none; }
         
-        /* --- CORAZÓN ASCII --- */
+        /* CORAZÓN ASCII */
         .heart-container {
             display: flex;
             justify-content: center;
@@ -83,7 +109,7 @@
             font-family: 'Courier New', Courier, monospace;
             font-weight: bold;
             font-style: normal;
-            font-size: 12px; /* Tamaño PC */
+            font-size: 12px;
             line-height: 10px;
             color: #ff0055;
             text-shadow: 0 0 10px #ff0055;
@@ -118,35 +144,16 @@
             margin-top: 20px;
             box-shadow: 0 0 15px #ff0055;
             border: 2px solid #ff0055;
-            -webkit-tap-highlight-color: transparent; /* Saca el azul al tocar en celu */
+            -webkit-tap-highlight-color: transparent;
         }
 
-        /* --- AJUSTES ESPECÍFICOS PARA CELULAR (MEDIA QUERY) --- */
+        /* AJUSTES PARA CELULAR */
         @media (max-width: 480px) {
-            .terminal {
-                width: 90%;
-                padding: 15px;
-            }
-            
-            /* Achicamos el corazón para que no se rompa en pantallas angostas */
-            pre {
-                font-size: 9px; 
-                line-height: 8px; 
-            }
-
-            .typing-text {
-                font-size: 0.9rem; /* Letra un poco más chica */
-            }
-
-            h2 {
-                font-size: 1.3rem;
-            }
-            
-            /* Ajuste para cuando sale el teclado */
-            input {
-                margin-top: 15px;
-                font-size: 1rem;
-            }
+            .terminal { width: 90%; padding: 15px; }
+            pre { font-size: 9px; line-height: 8px; }
+            .typing-text { font-size: 0.9rem; }
+            h2 { font-size: 1.3rem; }
+            #btn-unlock { padding: 12px; margin-top: 20px; }
         }
     </style>
 </head>
@@ -154,12 +161,15 @@
 
     <div class="terminal">
         <div id="console-output"></div>
-        <input type="tel" id="pass" placeholder="Ingresá la clave" maxlength="8" autocomplete="off">
+        
+        <input type="tel" id="pass" placeholder="DDMMAAAA" maxlength="8" autocomplete="off">
+        
+        <button id="btn-unlock" onclick="verificarClave()">[ DESBLOQUEAR SISTEMA ]</button>
         
         <div id="success-screen" class="hidden" style="text-align: center;">
             <div class="heart-container">
                 <pre>
-       *********  ********
+      ******** ********
     ************ ************
   ****************************
   ****************************
@@ -181,6 +191,7 @@
     <script>
         const output = document.getElementById('console-output');
         const input = document.getElementById('pass');
+        const btn = document.getElementById('btn-unlock');
         const successScreen = document.getElementById('success-screen');
         
         // --- TU CLAVE ---
@@ -200,7 +211,7 @@
         function typeWriter() {
             if (lineIndex < textLines.length) {
                 if (charIndex === 0) {
-                    const p = document.createElement('div'); // Div para mejor control
+                    const p = document.createElement('div');
                     p.classList.add('typing-text');
                     output.appendChild(p);
                 }
@@ -220,27 +231,39 @@
                     setTimeout(typeWriter, 150);
                 }
             } else {
+                // AL TERMINAR, MUESTRA INPUT Y BOTÓN
                 input.style.display = 'block';
+                btn.style.display = 'block';
                 input.focus();
             }
         }
 
         window.onload = typeWriter;
 
+        // FUNCIÓN DE VERIFICACIÓN (AHORA LA USAN LOS DOS)
+        function verificarClave() {
+            if (input.value === claveSecreta) {
+                // ÉXITO
+                document.body.style.backgroundColor = "#0a0002"; 
+                document.body.style.color = "#ff0055";
+                document.body.style.textShadow = "0 0 5px #ff0055";
+                
+                output.style.display = 'none';
+                input.style.display = 'none';
+                btn.style.display = 'none'; // Ocultamos también el botón
+                successScreen.classList.remove('hidden');
+            } else {
+                // ERROR
+                alert("CLAVE INCORRECTA.\nPista: Es nuestro dia mas especial.");
+                input.value = "";
+                input.focus();
+            }
+        }
+
+        // PERMITIR TAMBIÉN EL ENTER POR SI ACASO
         input.addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
-                if (input.value === claveSecreta) {
-                    document.body.style.backgroundColor = "#0a0002"; 
-                    document.body.style.color = "#ff0055";
-                    document.body.style.textShadow = "0 0 5px #ff0055";
-                    
-                    output.style.display = 'none';
-                    input.style.display = 'none';
-                    successScreen.classList.remove('hidden');
-                } else {
-                    alert("Clave incorrecta. Pista: Es nuestra fecha mas importante.");
-                    input.value = "";
-                }
+                verificarClave();
             }
         });
     </script>
