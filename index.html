@@ -3,55 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acceso Restringido</title>
+    <title>Acceso Seguro - Protocolo San Valentín</title>
     <style>
-        body { background-color: #0d1117; color: #58a6ff; font-family: 'Courier New', monospace; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .terminal { width: 90%; max-width: 600px; border: 1px solid #30363d; padding: 25px; background: #161b22; border-radius: 6px; box-shadow: 0 0 20px rgba(88, 166, 255, 0.2); }
-        p { margin: 10px 0; line-height: 1.5; }
-        input { background: transparent; border: none; border-bottom: 2px solid #58a6ff; color: #7ee787; font-family: inherit; font-size: 1.2rem; outline: none; width: 100%; padding: 5px; margin-top: 15px; }
-        .success { color: #3fb950; font-weight: bold; margin-top: 20px; border: 1px dashed #3fb950; padding: 10px; }
-        .error { color: #f85149; margin-top: 10px; }
-        a { color: #d29922; text-decoration: none; border-bottom: 1px solid #d29922; }
-        a:hover { background: #d29922; color: #0d1117; }
+        /* ESTILO GENERAL RETRO */
+        body {
+            background-color: #050505;
+            color: #0f0; /* Color fósforo verde clásico */
+            font-family: 'Courier New', monospace;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            text-shadow: 0 0 5px #0f0; /* Resplandor neón */
+        }
+
+        /* EFECTO DE LINEAS DE MONITOR VIEJO (CRT) */
+        body::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 2;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
+
+        .terminal {
+            width: 90%;
+            max-width: 650px;
+            z-index: 3;
+            padding: 20px;
+        }
+
+        /* TEXTO QUE SE ESCRIBE SOLO */
+        .typing-text {
+            border-right: 2px solid #0f0;
+            white-space: pre-wrap;
+            overflow: hidden;
+            animation: blinkCursor 0.75s step-end infinite;
+        }
+
+        @keyframes blinkCursor {
+            from, to { border-color: transparent; }
+            50% { border-color: #0f0; }
+        }
+
+        input {
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid #0f0;
+            color: #fff;
+            font-family: inherit;
+            font-size: 1.2rem;
+            outline: none;
+            width: 100%;
+            margin-top: 20px;
+            display: none; /* Se oculta hasta que termine de escribir */
+        }
+
+        .hidden { display: none; }
+        
+        /* EL CORAZÓN ASCII */
+        pre {
+            font-size: 10px;
+            line-height: 10px;
+            color: #ff0055; /* Rosa neón */
+            text-shadow: 0 0 10px #ff0055;
+            text-align: center;
+        }
+
+        a {
+            color: #fff;
+            background-color: #ff0055;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 15px;
+            box-shadow: 0 0 15px #ff0055;
+            transition: transform 0.2s;
+        }
+        
+        a:hover { transform: scale(1.1); }
+
     </style>
 </head>
 <body>
+
     <div class="terminal">
-        <p>> SISTEMA: "EL ALGORITMO DE NUESTRA HISTORIA"</p>
-        <p>> ESTADO: PROTEGIDO. INTRODUZCA CREDENCIALES.</p>
-        <p>> Pista: Fecha de inicio (DDMMAAAA)</p>
+        <div id="console-output"></div>
+        <input type="tel" id="pass" placeholder="Ingresá la fecha (DDMMAAAA)" maxlength="8" autocomplete="off">
         
-        <input type="password" id="pass" placeholder="Ej: 24102025" autofocus maxlength="8">
-        <div id="mensaje"></div>
+        <div id="success-screen" class="hidden" style="text-align: center;">
+            <pre>
+      ******** ********
+    ************ ************
+  ****************************
+  ****************************
+    ************************
+      ********************
+        ****************
+          ************
+            ********
+              ****
+            </pre>
+            <h2 style="color: #fff; text-shadow: 0 0 10px #fff;">ACCESO CONCEDIDO</h2>
+            <p style="color: #ddd;">El sistema ha desbloqueado tu carta:</p>
+            <br>
+            <a href="TU_LINK_DE_DRIVE_AQUI" target="_blank">DESCARGAR CARTA.PDF</a>
+        </div>
     </div>
 
     <script>
+        const output = document.getElementById('console-output');
         const input = document.getElementById('pass');
-        const mensaje = document.getElementById('mensaje');
+        const successScreen = document.getElementById('success-screen');
         
-        // --- CONFIGURACIÓN ---
-        const claveSecreta = "24102025"; // TU FECHA YA PUESTA
-        
-        // ¡OJO! ACÁ TENÉS QUE PEGAR EL LINK DE TU PDF DE DRIVE CUANDO LO TENGAS
-        const linkPDF = "TU_LINK_DE_DRIVE_AQUI"; 
-        // ---------------------
+        // LA CLAVE DE USTEDES
+        const claveSecreta = "24102025"; 
 
+        // TEXTO DE INTRODUCCIÓN (Podes cambiarlo si querés)
+        const textLines = [
+            "> INICIANDO SISTEMA...",
+            "> CARGANDO MÓDULO DE RECUERDOS...",
+            "> ERROR: ARCHIVO ENCRIPTADO.",
+            "> SE REQUIERE FECHA DE INICIO PARA DESBLOQUEAR.",
+            "> POR FAVOR, INGRESE LA CLAVE (DDMMAAAA):"
+        ];
+
+        let lineIndex = 0;
+        let charIndex = 0;
+
+        function typeWriter() {
+            if (lineIndex < textLines.length) {
+                if (charIndex === 0) {
+                    const p = document.createElement('p');
+                    p.classList.add('typing-text');
+                    output.appendChild(p);
+                }
+                
+                const currentLine = textLines[lineIndex];
+                const currentP = output.lastElementChild;
+                
+                currentP.textContent += currentLine.charAt(charIndex);
+                charIndex++;
+
+                if (charIndex < currentLine.length) {
+                    setTimeout(typeWriter, 50); // Velocidad de escritura
+                } else {
+                    currentP.classList.remove('typing-text'); // Deja de parpadear el cursor en la linea vieja
+                    lineIndex++;
+                    charIndex = 0;
+                    setTimeout(typeWriter, 300); // Pausa entre líneas
+                }
+            } else {
+                // Cuando termina de escribir, muestra el input
+                input.style.display = 'block';
+                input.focus();
+            }
+        }
+
+        // Arranca la animación al cargar
+        window.onload = typeWriter;
+
+        // VALIDACIÓN
         input.addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
                 if (input.value === claveSecreta) {
-                    // SI LA CLAVE ES CORRECTA (24102025):
-                    mensaje.innerHTML = `
-                        <div class="success">
-                            <p>> [✓] ACCESO CONCEDIDO.</p>
-                            <p>> Desencriptando archivo...</p>
-                            <p>> <a href="${linkPDF}" target="_blank">DESCARGAR_CARTA_OFICIAL.PDF</a></p>
-                        </div>
-                    `;
-                    input.style.display = 'none'; // Oculta el input
+                    // EFECTO DE ÉXITO
+                    document.body.style.backgroundColor = "#1a050a"; // Cambia el fondo a rojizo sutil
+                    output.style.display = 'none'; // Borra el texto verde
+                    input.style.display = 'none'; // Borra el input
+                    successScreen.classList.remove('hidden'); // Muestra el corazón
                 } else {
-                    // SI LA CLAVE ESTÁ MAL:
-                    mensaje.innerHTML = `<p class="error">> [X] ERROR: Clave incorrecta. Intente nuevamente.</p>`;
-                    input.value = ""; // Limpia el input
+                    // EFECTO DE ERROR
+                    input.style.borderColor = "red";
+                    input.classList.add('shake');
+                    setTimeout(() => input.style.borderColor = "#0f0", 500);
+                    alert("ERROR: Clave incorrecta. Intentá con la fecha importante.");
+                    input.value = "";
                 }
             }
         });
