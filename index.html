@@ -8,15 +8,15 @@
         /* ESTILO GENERAL RETRO */
         body {
             background-color: #050505;
-            color: #0f0; /* Color fósforo verde clásico */
-            font-family: 'Courier New', monospace;
+            color: #0f0; /* Color fósforo verde clásico para la intro */
+            font-family: 'Courier New', Courier, monospace; /* Forzamos monospace */
             margin: 0;
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             overflow: hidden;
-            text-shadow: 0 0 5px #0f0; /* Resplandor neón */
+            text-shadow: 0 0 5px #0f0;
         }
 
         /* EFECTO DE LINEAS DE MONITOR VIEJO (CRT) */
@@ -66,29 +66,52 @@
 
         .hidden { display: none; }
         
-        /* EL CORAZÓN ASCII */
+        /* --- ARREGLO DEL CORAZÓN ASCII --- */
+        .heart-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
         pre {
-            font-size: 10px;
-            line-height: 10px;
+            font-family: 'Courier New', Courier, monospace; /* Fundamental para ASCII */
+            font-style: normal; /* ESTO ARREGLA LA INCLINACIÓN */
+            font-size: 12px; /* Un poquito más grande */
+            line-height: 12px;
             color: #ff0055; /* Rosa neón */
             text-shadow: 0 0 10px #ff0055;
-            text-align: center;
+            text-align: left; /* El arte se alinea a la izquierda dentro de su caja */
+            margin: 0;
         }
 
-        a {
+        /* Estilos de la pantalla de éxito */
+        #success-screen h2 {
+            color: #fff;
+            text-shadow: 0 0 15px #ff0055; /* Sombra rosa al título */
+            margin-top: 0;
+        }
+        #success-screen p { color: #ddd; text-shadow: none; }
+
+        /* BOTÓN DE DESCARGA */
+        .btn-download {
             color: #fff;
             background-color: #ff0055;
             text-decoration: none;
-            padding: 10px 20px;
+            padding: 15px 30px;
             border-radius: 5px;
             font-weight: bold;
+            font-size: 1.1rem;
             display: inline-block;
-            margin-top: 15px;
-            box-shadow: 0 0 15px #ff0055;
-            transition: transform 0.2s;
+            margin-top: 25px;
+            box-shadow: 0 0 20px #ff0055;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 2px solid #ff0055;
         }
         
-        a:hover { transform: scale(1.1); }
+        .btn-download:hover { 
+            transform: scale(1.05); 
+            box-shadow: 0 0 30px #ff0055;
+            background-color: transparent;
+        }
 
     </style>
 </head>
@@ -99,7 +122,8 @@
         <input type="tel" id="pass" placeholder="Ingresá la fecha (DDMMAAAA)" maxlength="8" autocomplete="off">
         
         <div id="success-screen" class="hidden" style="text-align: center;">
-            <pre>
+            <div class="heart-container">
+                <pre>
       ******** ********
     ************ ************
   ****************************
@@ -110,11 +134,12 @@
           ************
             ********
               ****
-            </pre>
-            <h2 style="color: #fff; text-shadow: 0 0 10px #fff;">ACCESO CONCEDIDO</h2>
-            <p style="color: #ddd;">El sistema ha desbloqueado tu carta:</p>
-            <br>
-            <a href="TU_LINK_DE_DRIVE_AQUI" target="_blank">DESCARGAR CARTA.PDF</a>
+                </pre>
+            </div>
+            <h2>ACCESO CONCEDIDO</h2>
+            <p>El sistema ha desbloqueado tu carta:</p>
+            
+            <a href="TU_LINK_DE_DRIVE_AQUI" target="_blank" class="btn-download">DESCARGAR CARTA.PDF</a>
         </div>
     </div>
 
@@ -126,7 +151,7 @@
         // LA CLAVE DE USTEDES
         const claveSecreta = "24102025"; 
 
-        // TEXTO DE INTRODUCCIÓN (Podes cambiarlo si querés)
+        // TEXTO DE INTRODUCCIÓN
         const textLines = [
             "> INICIANDO SISTEMA...",
             "> CARGANDO MÓDULO DE RECUERDOS...",
@@ -153,37 +178,34 @@
                 charIndex++;
 
                 if (charIndex < currentLine.length) {
-                    setTimeout(typeWriter, 50); // Velocidad de escritura
+                    setTimeout(typeWriter, 40); // Un poco más rápido
                 } else {
-                    currentP.classList.remove('typing-text'); // Deja de parpadear el cursor en la linea vieja
+                    currentP.classList.remove('typing-text');
                     lineIndex++;
                     charIndex = 0;
-                    setTimeout(typeWriter, 300); // Pausa entre líneas
+                    setTimeout(typeWriter, 200);
                 }
             } else {
-                // Cuando termina de escribir, muestra el input
                 input.style.display = 'block';
                 input.focus();
             }
         }
 
-        // Arranca la animación al cargar
         window.onload = typeWriter;
 
         // VALIDACIÓN
         input.addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
                 if (input.value === claveSecreta) {
-                    // EFECTO DE ÉXITO
-                    document.body.style.backgroundColor = "#1a050a"; // Cambia el fondo a rojizo sutil
-                    output.style.display = 'none'; // Borra el texto verde
-                    input.style.display = 'none'; // Borra el input
-                    successScreen.classList.remove('hidden'); // Muestra el corazón
+                    // CAMBIO DE COLOR AL ROSA NEÓN
+                    document.body.style.backgroundColor = "#0a0002"; 
+                    document.body.style.color = "#ff0055";
+                    document.body.style.textShadow = "0 0 5px #ff0055";
+                    
+                    output.style.display = 'none';
+                    input.style.display = 'none';
+                    successScreen.classList.remove('hidden');
                 } else {
-                    // EFECTO DE ERROR
-                    input.style.borderColor = "red";
-                    input.classList.add('shake');
-                    setTimeout(() => input.style.borderColor = "#0f0", 500);
                     alert("ERROR: Clave incorrecta. Intentá con la fecha importante.");
                     input.value = "";
                 }
